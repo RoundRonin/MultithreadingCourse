@@ -1,36 +1,27 @@
 #include <stdio.h>
+#include <iostream>
 #include <omp.h>
+#include <math.h>
+
+bool isPrime(int number) {
+    int root = sqrt(number);
+    for (int i = 2; i <= root; i++) {
+        if (number % i == 0) return false;
+    }
+    return true;
+}
 
 int main(void) {
-#pragma omp parallel
-    {
-        int n = omp_get_num_threads();
-        int m = omp_get_thread_num();
-
-        int a = 0;
-        int b = 101;
-
-        int width = b / n;
-        int num_long = b / m;
-
-        int left = a;
-        int right = b;
-
-        if (n < num_long) {
-            left = a + m * (width + 1);
-            right = left + (width + 1);
-        } else if (n == num_long) {
-            left = a + m * (width + 1);
-            right = left + width;
-        } else {
-            left = a + m * (width + 1) + n - num_long;
-            right = left + width;
-        }
-        
-        for (int i = left; i < right; i+=1) {
-            printf("Hello %d (current thread -- %d)\n", i, m);
-        }
+    // дано n -- вывести число простых чисел <= n
+    int n, counter{0};
+    std::cin >> n;
+    double time_before = omp_get_wtime();
+    #pragma omp parallel for
+    for (int i = 2; i <= n; i++) {
+        if (isPrime(i)) counter++;
     }
-    
-    return 0; 
+    double time_after = omp_get_wtime();
+    double time_diff = time_after - time_before;
+    std::cout << counter << std::endl;
+    std::cout << time_diff << std::endl;
 }
