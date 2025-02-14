@@ -16,7 +16,6 @@ int main(void) {
     int n, counter{0};
     std::cin >> n;
     double time_before = omp_get_wtime();
-    #pragma omp parallel for
     for (int i = 2; i <= n; i++) {
         if (isPrime(i)) counter++;
     }
